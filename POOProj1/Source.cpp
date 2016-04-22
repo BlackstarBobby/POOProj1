@@ -7,7 +7,7 @@
 using namespace std;
 ifstream inf("intrare.txt");
 
-//Nota!!!!!!!!!!!!!!!!!!!! La insert in matrice, scad -1 din pozitia dorita, la linie si coloana
+//Nota!!!!!!! La insert in matrice, scad -1 din pozitia dorita, la linie si coloana
 
 int main() {
 
