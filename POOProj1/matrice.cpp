@@ -154,11 +154,11 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	 unsigned int k = 0;
 	 unsigned int l = 0;
 	 complex temp;
-	 for (int i = 0; i <= C.gradLinii(); i++)
+	 for (int i = 0; i < C.gradMaxim()+1; i++)
 	 {
 		 if (k<C.Matt.size() && (C.Matt[k].first == i)) {
 			 l = 0;
-			 for (int j = 0; j <= C.gradColoane(); j++)
+			 for (int j = 0; j < C.gradMaxim() + 1; j++)
 			 {
 				 if ((l < C.Matt[k].second.size()) && C.Matt[k].second[l].first == j) {
 					 cout << C.Matt[k].second[l].second << " ";
@@ -171,7 +171,7 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 			 k++;
 		 }
 		 else {
-			 for (int j = 0; j <= C.gradColoane(); j++)
+			 for (int j = 0; j < C.gradMaxim() + 1; j++)
 			 {
 				 cout << temp << " ";
 			 }
@@ -248,6 +248,16 @@ matrice& matrice::operator/(complex x) {
 complex matrice::determinant(int grad) {
 	int  p, h, k, i, j;
 	matrice Y;
+	if (grad == 1) {
+		for (unsigned int i = 0; i < this->Matt.size(); i++)
+		{
+			for (unsigned int  j = 0; j < this->Matt[i].second.size(); j++)
+			{
+				if (this->Matt[i].second[j].second != 0)
+					return this->Matt[i].second[j].second;
+			}
+		}
+	}
 	if (grad == 2)
 	{
 		return ((this->getValoareElement(0, 0 )*this->getValoareElement(1 , 1 )) - (this->getValoareElement(1 , 0 )*this->getValoareElement(0 , 1 )));
@@ -311,15 +321,15 @@ matrice matrice::cofactor(matrice &X, int grad)
 /*Finding transpose of matrix*/
 matrice matrice::transpose( matrice &Y, int grad)
 {
-	matrice inverse;
-	for (int i = 0; i <= Y.gradLinii(); i++)
-	{
-		for (int j = 0; j <= Y.gradColoane(); j++)
+		matrice inverse;
+		for (int i = 0; i < Y.gradMaxim() + 1; i++)
 		{
-			inverse.insert(Y.getValoareElement(i, j), j, i);
+			for (int j = 0; j < Y.gradMaxim() + 1; j++)
+			{
+				inverse.insert(Y.getValoareElement(i, j), j, i);
+			}
 		}
-	}
-	return inverse;
+		return inverse;
 }
 
 matrice matrice::MatrixInvers() {

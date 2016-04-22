@@ -6,6 +6,7 @@ using namespace std;
 
 class complex
 {
+	friend class matrice;
 private:
 	float real;
 	float imag;
@@ -28,6 +29,7 @@ public:
 	complex operator *(complex &);
 	complex operator /(complex &);
 	complex operator *(float);
+	bool operator !=(float);
 	bool operator ==(complex);
 	void operator =(complex &);
 	friend ostream& operator <<(ostream &s, complex &c);

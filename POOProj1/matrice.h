@@ -38,8 +38,9 @@ public:
 	 int gradMaxim();
 	 int gradLinii();
 	 int gradColoane();
-
+	 //
 	complex getValoareElement(unsigned int i, unsigned int j);
+
 	complex determinant(int grad);
 	matrice MatrixInvers();
 	matrice cofactor(matrice &, int);

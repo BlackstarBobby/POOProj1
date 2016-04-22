@@ -44,6 +44,14 @@ complex complex::operator*(float x) {
 	return tmp;
 }
 
+bool complex::operator!=(float c)
+{
+	if (this->real != c || this->imag != c)
+		return true;
+	else
+		return false;
+}
+
 complex complex::operator /(complex &c){
 	float div = (c.real*c.real) + (c.imag*c.imag);
 	complex tmp;
