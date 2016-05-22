@@ -24,14 +24,15 @@ public:
 	complex getreciprocal();
 
 	//METODE PRELUCRARE*******************
-	complex operator +(complex &);
-	complex operator -(complex &);
-	complex operator *(complex &);
-	complex operator /(complex &);
+	complex operator +(const complex &);
+	complex operator -(const complex &);
+	complex operator *(const complex &);
+	complex operator /(const complex &);
 	complex operator *(float);
 	bool operator !=(float);
-	bool operator ==(complex);
-	void operator =(complex &);
+	bool operator ==(const complex);
+	//void operator =(const complex &);
+	complex& operator=(const complex&);
 	friend ostream& operator <<(ostream &s, complex &c);
 	friend istream& operator >>(istream &s, complex &c);
 

@@ -52,9 +52,7 @@ public:
 
 	//Metode prelucrare
 
-	//matrice operator =(matrice &);
-	void operator =(matrice &);
-	//matrice operator =( matrice &y);
+	matrice& operator=(const matrice&);
 	 matrice operator +(matrice &);
 	matrice operator -(matrice &);
 	matrice operator *(matrice &);
@@ -63,4 +61,12 @@ public:
 	matrice operator !();
 	matrice Inversa();
 	bool estePatratica();
+};
+
+class matrice_patratica :public matrice {
+
+};
+
+class patratica_triunghiulara :public matrice_patratica {
+
 };

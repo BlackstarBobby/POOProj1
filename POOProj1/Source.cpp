@@ -10,7 +10,7 @@ ifstream inf("intrare.txt");
 //Nota!!!!!!! La insert in matrice, scad -1 din pozitia dorita, la linie si coloana
 
 int main() {
-
+	/*
 	matrice A, B;
 	unsigned int nrElemNenule;
 	char optiune;
@@ -56,5 +56,29 @@ int main() {
 		cout << "\n\nReluati? (y/n)";
 		cin >> optiune;
 	} while (optiune == 'y');
+
+	*/
+
+	complex a(3, 4);
+	complex b;
+	complex c;
+	c=b = a;
+	cout << "a " << a << endl << "b " << b << endl<<"c "<<c<<endl;
+
+	matrice A;
+	matrice B;
+	matrice C;
+
+	complex x(1, 2);
+	complex y(2, 3);
+
+	A.insert(a, 0, 0);
+	A.insert(x, 1, 0);
+	A.insert(y, 1, 1);
+
+	cout << A<<endl;
+	C=B = A;
+	cout << B;
+	cout << endl << C;
 	return 0;
 }

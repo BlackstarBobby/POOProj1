@@ -11,26 +11,32 @@ complex::complex(const complex &c){
 
 
 //------- METODE PRELUCRARE ----------------------
-void complex::operator =(complex &c){
+/*
+void complex::operator =(const complex &c){
 	this->real = c.real;
 	this->imag = c.imag;
 }
-
-complex complex::operator +(complex &c){
+*/
+complex& complex::operator=(const complex& x) {
+	this->real = x.real;
+	this->imag = x.imag;
+	return *this;
+}
+complex complex::operator +(const complex &c){
 	complex tmp;
 	tmp.real = this->real + c.real;
 	tmp.imag = this->imag + c.imag;
 	return tmp;
 }
 
-complex complex::operator -(complex &c){
+complex complex::operator -(const complex &c){
 	complex tmp;
 	tmp.real = this->real - c.real;
 	tmp.imag = this->imag - c.imag;
 	return tmp;
 }
 
-complex complex::operator *(complex &c){
+complex complex::operator *(const complex &c){
 	complex tmp;
 	tmp.real = (real*c.real) - (imag*c.imag);
 	tmp.imag = (real*c.imag) + (imag*c.real);
@@ -52,7 +58,7 @@ bool complex::operator!=(float c)
 		return false;
 }
 
-complex complex::operator /(complex &c){
+complex complex::operator /(const complex &c){
 	float div = (c.real*c.real) + (c.imag*c.imag);
 	complex tmp;
 	tmp.real = (real*c.real) + (imag*c.imag);

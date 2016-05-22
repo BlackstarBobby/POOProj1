@@ -189,7 +189,7 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	 int a, b;
 	 cout << "\nIntroduceti linia: ";
 	 cin >> a;
-	 cout << "\nIntroduceti coloana: ";
+	 cout << "Introduceti coloana: ";
 	 cin >> b;
 	 C.insert(x,a-1,b-1);
 	 return s;
@@ -287,6 +287,40 @@ complex matrice::determinant(int grad) {
 	}
 }
 
+matrice& matrice::operator=(const matrice &X)
+{
+	if (this->Matt.capacity() < X.Matt.capacity()) {
+		this->Matt.reserve(X.Matt.size());
+	}
+	pair<int, vector<pair<int, complex>>>liniiContent;
+	pair<int, complex>colContent;
+
+	for (unsigned int  i = 0; i < X.Matt.size(); i++)
+	{
+		/*
+		//this->Matt[i].first = X.Matt[i].first;
+
+		if (this->Matt[i].second.capacity() < X.Matt[i].second.capacity()) {
+			this->Matt[i].second.reserve(X.Matt[i].second.size());
+		}
+		for (unsigned int j = 0; j < X.Matt[i].second.size(); j++)
+		{
+			this->Matt[i].second[j].first = X.Matt[i].second[j].first;
+			this->Matt[i].second[j].second = this->Matt[i].second[j].second;
+		}*/
+		liniiContent.first = X.Matt[i].first;
+		for (unsigned j = 0; j < X.Matt[i].second.size(); j++)
+		{
+			colContent.first = X.Matt[i].second[j].first;
+			colContent.second = X.Matt[i].second[j].second;
+			liniiContent.second.push_back(colContent);
+		}
+		this->Matt.push_back(liniiContent);
+		liniiContent.second.clear();
+	}
+	return *this;
+}
+
 //***************************************************************************
 //---------------VARIANTA DE GASIRE INVERSA ------
 matrice matrice::cofactor(matrice &X, int grad)
@@ -343,12 +377,6 @@ matrice matrice::MatrixInvers() {
 	return cofactor(*this, this->gradMaxim()+1)/detPrin;  
 }
 
- void matrice::operator =(matrice &X) { //incomplet
-	// this->dimensiune = X.dimensiune;
-	// this->nrLinii = X.nrLinii;
-	// this->nrCol = X.nrCol;
-	// this->Matt = X.Matt;
- }
 
  bool matrice::estePatratica() {
 	 if (this->gradLinii() == this->gradColoane())
