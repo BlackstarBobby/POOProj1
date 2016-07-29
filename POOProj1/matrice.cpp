@@ -1,12 +1,34 @@
+#pragma once
 #include "matrice.h"
 #include <iostream>
+#include <fstream>
 
-matrice::matrice() :det(0, 0)
+//CONSTRUCTORI
+template <class a_type>
+matrice<a_type>::matrice()
 {
+	det = (a_type)0;
+	liniiDim = (a_type)0;
+	colDim = (a_type)0;
+}
+template <class a_type>
+matrice<a_type>::matrice(char *nume, matrice<a_type>& mat) {
+	ifstream inf(nume);
+	
+	complex<a_type> x;
+	int tempint, tempint2;
+	while (!inf.eof()) {
+		inf >> x >> tempint >> tempint2;
+		mat.insert(x, tempint-1, tempint2-1);
+		if (inf.eof())break;
+	}
+	inf.close();
+	//return maxul;
 }
 
-void matrice::ordonareLinii( matrice &X, unsigned int i) {
-	complex temp;
+template<class a_type>
+void matrice<a_type>::ordonareLinii( matrice<a_type>&X, unsigned int i) {
+	complex<a_type> temp;
 	int aux;
 	for (unsigned int k = 0; k < X.Matt[i].second.size() - 1; k++)
 		for (unsigned int j = 1; j < X.Matt[i].second.size(); j++)
@@ -14,13 +36,14 @@ void matrice::ordonareLinii( matrice &X, unsigned int i) {
 				aux = X.Matt[i].second[k].first;
 				X.Matt[i].second[k].first = X.Matt[i].second[j].first;
 				X.Matt[i].second[j].first = aux;
-				temp = complex(X.Matt[i].second[k].second);
-				X.Matt[i].second[k].second = complex(X.Matt[i].second[j].second);
-				X.Matt[i].second[j].second = complex(temp);
+				temp = complex<a_type>(X.Matt[i].second[k].second);
+				X.Matt[i].second[k].second = complex<a_type>(X.Matt[i].second[j].second);
+				X.Matt[i].second[j].second = complex<a_type>(temp);
 			}
 }
 
-void matrice::ordonareColoane( matrice &X) {
+template<class a_type>
+void matrice<a_type>::ordonareColoane( matrice<a_type> &X) {
 	int k;
 	unsigned int i;
 	for (i = 0; i< X.Matt.size() - 1; i++)		//ORDONAREA PRIMEI COLOANE
@@ -34,12 +57,13 @@ void matrice::ordonareColoane( matrice &X) {
 		}
 }
 
-void matrice::insert(complex &x, int linia, int coloana) {
-	pair<int, complex>pereche2;  //PREGATIREA VARIABILELOR
-	pair<int, vector<pair<int, complex>> >pereche1;
+template<class a_type>
+void matrice<a_type>::insert(complex<a_type> &x, int linia, int coloana) {
+	pair<int, complex<a_type>>pereche2;  //PREGATIREA VARIABILELOR
+	pair<int, vector<pair<int, complex<a_type>>> >pereche1;
 	
 	pereche2.first = coloana ;
-	pereche2.second = complex(x);
+	pereche2.second = complex<a_type>(x);
 	pereche1.first = linia ;
 
 	bool LinieComuna = false;		//INSERAREA PE ACEEASI LINIE
@@ -53,7 +77,7 @@ void matrice::insert(complex &x, int linia, int coloana) {
 	if (LinieComuna) {
 		Matt[i].second.push_back(pereche2);
 		if (Matt[i].second.size()>1) {			//ORDONAREA ELEMENTELOR AT CAND SE INTRODUCE PE ACEEASI LINIE
-			complex temp;
+			complex<a_type> temp;
 			int aux;
 			for (unsigned int k = 0; k < this->Matt[i].second.size() - 1; k++)
 				for (unsigned int j = k+1; j < this->Matt[i].second.size(); j++)
@@ -61,9 +85,9 @@ void matrice::insert(complex &x, int linia, int coloana) {
 						aux = Matt[i].second[k].first;
 						Matt[i].second[k].first = Matt[i].second[j].first;
 						Matt[i].second[j].first = aux;
-						temp = complex(Matt[i].second[k].second);
-						Matt[i].second[k].second = complex(Matt[i].second[j].second);
-						Matt[i].second[j].second = complex(temp);
+						temp = complex<a_type>(Matt[i].second[k].second);
+						Matt[i].second[k].second = complex<a_type>(Matt[i].second[j].second);
+						Matt[i].second[j].second = complex<a_type>(temp);
 					}
 		}
 	}
@@ -82,16 +106,19 @@ void matrice::insert(complex &x, int linia, int coloana) {
 				Matt[i].second.swap(Matt[j].second);
 			}
 		}
+	liniiDim = gradLinii();
+	colDim = gradColoane();
 }
 
-complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
-	complex temp;
+template<class a_type>
+complex<a_type> matrice<a_type>::getValoareElement(unsigned int linia, unsigned int coloana) {
+	complex<a_type> temp;
 	for (unsigned int i = 0; i< this->Matt.size(); i++)
 	{
 		for (unsigned int j = 0; j<this->Matt[i].second.size(); j++)
 		{
 			if ((this->Matt[i].first == linia) && (this->Matt[i].second[j].first == coloana)) {
-				temp = complex( this->Matt[i].second[j].second);
+				temp = complex<a_type>( this->Matt[i].second[j].second);
 				return temp;
 			}
 				
@@ -102,9 +129,11 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 
 //METODE ACCES**************************
 
- int matrice::getDim() { return this->dimensiune; }
+template<class a_type>
+ int matrice<a_type>::getDim() { return this->dimensiune; }
 
- int matrice::gradMaxim() {
+ template<class a_type>
+ int matrice<a_type>::gradMaxim() {
 	  int max = 0, max2 = 0;
 	 for (unsigned int i = 0; i < this->Matt.size(); i++)
 	 {
@@ -123,7 +152,8 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	 else
 		 return max2;
  }
- int matrice::gradLinii() { 
+ template<class a_type>
+ int matrice<a_type>::gradLinii() { 
 	 int max = 0;
 	 for (unsigned int i = 0; i < this->Matt.size(); i++)
 	 {
@@ -132,7 +162,8 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	 }
 	 return max;
  }
- int matrice::gradColoane() { 
+ template<class a_type>
+ int matrice<a_type>::gradColoane() { 
 	  int max = 0, max2 = 0;
 	 for (unsigned int i = 0; i < this->Matt.size(); i++)
 	 {
@@ -150,15 +181,16 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
  }
 
  //AFISARE*****************
- ostream& operator<<(ostream &s, matrice &C) {
+ template<class a_type>
+ ostream& operator<<(ostream &s, matrice<a_type> &C) {
 	 unsigned int k = 0;
 	 unsigned int l = 0;
-	 complex temp;
-	 for (int i = 0; i < C.gradMaxim()+1; i++)
+	 complex<a_type> temp;
+	 for (int i = 0; i < C.gradLinii()+1; i++)
 	 {
 		 if (k<C.Matt.size() && (C.Matt[k].first == i)) {
 			 l = 0;
-			 for (int j = 0; j < C.gradMaxim() + 1; j++)
+			 for (int j = 0; j < C.gradColoane() + 1; j++)
 			 {
 				 if ((l < C.Matt[k].second.size()) && C.Matt[k].second[l].first == j) {
 					 cout << C.Matt[k].second[l].second << " ";
@@ -171,7 +203,7 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 			 k++;
 		 }
 		 else {
-			 for (int j = 0; j < C.gradMaxim() + 1; j++)
+			 for (int j = 0; j < C.gradColoane() + 1; j++)
 			 {
 				 cout << temp << " ";
 			 }
@@ -181,9 +213,10 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	 return s;
  }
 
- istream & operator>>(istream &s, matrice &C)
+ template<class a_type>
+ istream & operator>>(istream &s, matrice<a_type> &C)
  {
-	 complex x;
+	 complex<a_type> x;
 	 cout << "\nIntroduceti partea reala si partea imaginara a numarului complex\n";
 	 cin >> x;
 	 int a, b;
@@ -196,10 +229,10 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
  }
 
  //METODE PRELUCRARE********************************************************************
-
- matrice matrice::operator+(matrice &X) {
-	matrice temp;
-	complex x,y;
+ template<class a_type>
+ matrice<a_type> matrice<a_type>::operator+(matrice<a_type> &X) {
+	matrice<a_type> temp;
+	complex<a_type> x,y;
 	unsigned int i, j;
 	 unsigned int maxLinii, maxColoane;
 	 this->gradLinii() > X.gradLinii() ? maxLinii = this->gradLinii() : maxLinii = X.gradLinii();
@@ -215,16 +248,17 @@ complex matrice::getValoareElement(unsigned int linia, unsigned int coloana) {
 	return temp;
 }
 
-matrice matrice::operator*(matrice &X) {
-	matrice temp;
+ template<class a_type>
+matrice<a_type> matrice<a_type>::operator*(matrice<a_type> &X) {
+	matrice<a_type> temp;
 	unsigned int i, j;
-	complex toinsert;
+	complex<a_type> toinsert;
 	unsigned int maxLinii, maxColoane;
 	this->gradLinii() > X.gradLinii() ? maxLinii = this->gradLinii() : maxLinii = X.gradLinii();
 	this->gradColoane() > X.gradColoane() ? maxColoane = this->gradColoane() : maxColoane = X.gradColoane();
 	for (i = 0; i <= maxLinii; i++) {
 		for (unsigned int k = 0; k <= maxColoane; k++) {
-			toinsert = complex::complex();
+			toinsert = complex<a_type>::complex();
 			for (j = 0; j <= maxColoane; j++) {
 				 toinsert = toinsert + (this->getValoareElement(i, j))*(X.getValoareElement(j, k));
 			}
@@ -234,7 +268,8 @@ matrice matrice::operator*(matrice &X) {
 	return temp;
 }
 
-matrice& matrice::operator/(complex x) {
+template<class a_type>
+matrice<a_type>& matrice<a_type>::operator/(complex<a_type> x) {
 	for (unsigned int  i = 0; i < this->Matt.size(); i++)
 	{
 		for (unsigned int  j = 0; j < this->Matt[i].second.size(); j++)
@@ -245,25 +280,32 @@ matrice& matrice::operator/(complex x) {
 	return *this;
 }
 
-complex matrice::determinant(int grad) {
+
+
+//*************************	DETERMINANTI********************
+
+template<class a_type>
+ void matrice<a_type>::determinant(complex<a_type>& x,int grad) {
 	int  p, h, k, i, j;
-	matrice Y;
+	matrice<a_type> Y;
 	if (grad == 1) {
 		for (unsigned int i = 0; i < this->Matt.size(); i++)
 		{
 			for (unsigned int  j = 0; j < this->Matt[i].second.size(); j++)
 			{
 				if (this->Matt[i].second[j].second != 0)
-					return this->Matt[i].second[j].second;
+					//return this->Matt[i].second[j].second;
+					x = Matt[i].second[j].second;;
 			}
 		}
 	}
 	if (grad == 2)
 	{
-		return ((this->getValoareElement(0, 0 )*this->getValoareElement(1 , 1 )) - (this->getValoareElement(1 , 0 )*this->getValoareElement(0 , 1 )));
+		x= ((this->getValoareElement(0, 0 )*this->getValoareElement(1 , 1 )) - (this->getValoareElement(1 , 0 )*this->getValoareElement(0 , 1 )));
 	}
 	else
 	{
+		complex<a_type> temp;
 		for (p = 0; p < grad; p++) {
 			h = 0;
 			k = 0;
@@ -281,19 +323,65 @@ complex matrice::determinant(int grad) {
 					}
 				}
 			}
-			this->det = this->det + ((this->getValoareElement(0, p)) * (Y.determinant(grad - 1)) * (float)pow(-1, p));
+			Y.determinant(temp, grad - 1);
+			x = x + ((this->getValoareElement(0, p)) * temp * (a_type)pow(-1, p));
+		}
+		//return this->det;
+	}
+}
+ 
+/*
+complex<int> matrice<int>::determinant(int grad) {
+	int  p, h, k, i, j;
+	matrice<int> Y;
+	if (grad == 1) {
+		for (unsigned int i = 0; i < this->Matt.size(); i++)
+		{
+			for (unsigned int j = 0; j < this->Matt[i].second.size(); j++)
+			{
+				if (this->Matt[i].second[j].second != 0)
+					return this->Matt[i].second[j].second;
+			}
+		}
+	}
+	if (grad == 2)
+	{
+		return ((this->getValoareElement(0, 0)*this->getValoareElement(1, 1)) - (this->getValoareElement(1, 0)*this->getValoareElement(0, 1)));
+	}
+	else
+	{
+		for (p = 0; p < grad; p++) {
+			h = 0;
+			k = 0;
+			Y.~matrice();
+			for (i = 1; i < grad; i++) {
+				for (j = 0; j < grad; j++) {
+					if (j == p) {
+						continue;
+					}
+					Y.insert(this->getValoareElement(i, j), h, k);
+					k++;
+					if (k == grad - 1) {
+						h++;
+						k = 0;
+					}
+				}
+			}
+			this->det = this->det + ((this->getValoareElement(0, p)) * (Y.determinant(grad - 1)) * (int)pow(-1, p));
 		}
 		return this->det;
 	}
 }
-
-matrice& matrice::operator=(const matrice &X)
+*/
+ //******************************************
+template<class a_type>
+matrice<a_type>& matrice<a_type>::operator=(const matrice<a_type> &X)
 {
 	if (this->Matt.capacity() < X.Matt.capacity()) {
 		this->Matt.reserve(X.Matt.size());
 	}
-	pair<int, vector<pair<int, complex>>>liniiContent;
-	pair<int, complex>colContent;
+	pair<int, vector<pair<int, complex<a_type>>>>liniiContent;
+	pair<int, complex<a_type>>colContent;
 
 	for (unsigned int  i = 0; i < X.Matt.size(); i++)
 	{
@@ -323,10 +411,12 @@ matrice& matrice::operator=(const matrice &X)
 
 //***************************************************************************
 //---------------VARIANTA DE GASIRE INVERSA ------
-matrice matrice::cofactor(matrice &X, int grad)
+template<class a_type>
+matrice<a_type> matrice<a_type>::cofactor(matrice<a_type> &X, int grad)
 {	
-	matrice b;
-	matrice fac;
+	matrice<a_type> b;
+	matrice<a_type> fac;
+	complex<a_type> temp;
 	int p, q, m, n, i, j;
 	for (q = 0; q<grad; q++){
 		for (p = 0; p<grad; p++){
@@ -345,7 +435,8 @@ matrice matrice::cofactor(matrice &X, int grad)
 					}
 				}
 			}
-			fac.insert(b.determinant(grad-1)*(float)pow(-1, p + q), q , p );
+			b.determinant(temp, grad - 1);
+			fac.insert(temp*(float)pow(-1, p + q), q , p );
 			b.~matrice();
 		}
 	}
@@ -353,9 +444,10 @@ matrice matrice::cofactor(matrice &X, int grad)
 }
 
 /*Finding transpose of matrix*/
-matrice matrice::transpose( matrice &Y, int grad)
+template<class a_type>
+matrice<a_type> matrice<a_type>::transpose( matrice<a_type> &Y, int grad)
 {
-		matrice inverse;
+		matrice<a_type> inverse;
 		for (int i = 0; i < Y.gradMaxim() + 1; i++)
 		{
 			for (int j = 0; j < Y.gradMaxim() + 1; j++)
@@ -366,19 +458,22 @@ matrice matrice::transpose( matrice &Y, int grad)
 		return inverse;
 }
 
-matrice matrice::MatrixInvers() {
-	matrice Inversa;
+template<class a_type>
+matrice<a_type> matrice<a_type>::MatrixInvers() {
+	matrice<a_type> Inversa;
 
-	complex x(1, 0);
-	complex detPrin = x/determinant(this->gradMaxim()+1);
+	complex<a_type> x(1, 0);
+	complex<a_type> deImpartit;
+	determinant(deImpartit, this->gradMaxim() + 1);
+	complex<a_type> detPrin = x/deImpartit;
 
 //	x=complex();
 
 	return cofactor(*this, this->gradMaxim()+1)/detPrin;  
 }
 
-
- bool matrice::estePatratica() {
+template<class a_type>
+ bool matrice<a_type>::estePatratica() {
 	 if (this->gradLinii() == this->gradColoane())
 		 return true;
 	 else
@@ -386,118 +481,28 @@ matrice matrice::MatrixInvers() {
  }
 
  //DECONSTRUCTOR
-matrice::~matrice() {
+ template<class a_type>
+matrice<a_type>::~matrice() {
 	this->Matt.erase(this->Matt.begin(),this->Matt.end());
 }
 
 
-// *****FIRST TRY, WITH STRUCT AND SHIT
-/*
- void matrice::insert(complex &x, int linia, int coloana) {
-	if (primCol==NULL) { //introducem un nod pe prima col daca e nula
-		dimensiune = 1;
-		primCol = new nod2;
-		primCol->linia = linia;
-		primCol->prim = new matrice::nod;
-		primCol->next = NULL;
-					//Probably useless
-		dimensiune = 0;
-		nrLinii = 1;
-		nrCol = 1;
-		//nrColoane.insert(coloana,1);
-		nrColoane[coloana] = 1;
-					//useless end
-		primCol->prim->coloana = coloana;
-		primCol->prim->nrComplex=complex::complex(x);
-		primCol->prim->next = NULL;
+template <class a_type>
+void matrice_patratica<a_type>::determinant(complex<a_type>&x,int grad){
+	complex<a_type> rezultat;
+	rezultat = this->getValoareElement(0, 0);
+	for (int i =1; i < grad; i++) {
+		rezultat = rezultat * this->getValoareElement(i, i);
 	}
-	else {			//daca nu e nula, introducem un nod 
-		nod2 *p = primCol;
-		while (p->linia < linia && p->next && p->next->linia<linia)
-			p = p->next;				//cautam pox de introdus
-		if (p->linia == linia) {			//cazul cand avem un singur nod in col de inceput
-				nod *p2 = p->prim;
-				while (p2->coloana < coloana && p2->next) {
-					p2 = p2->next;
-				}
-				dimensiune += 1;
-				if (!nrColoane[coloana]) {
-					nrColoane[coloana] = 1;
-					nrCol += 1;
-				}
-				if (p2 == p->prim && coloana<p->prim->coloana) {		//introducere inainte prim element al liniei
-					nod *temp = new nod;
-					temp->coloana = coloana;
-					temp->next = p->prim;
-					p->prim = temp;
-					temp->nrComplex = complex(x);
-				}
-				else {
-					nod *temp = new nod;
-					temp->coloana = coloana;
-					temp->next = p2->next;
-					p2->next = temp;
-					temp->nrComplex = complex(x);
-				}
-		}
-		else {		//inseram o noua linie de inceput in prima coloana
-			nod2 *temp = new nod2;
-			temp->linia = linia;
-			temp->prim = new nod;
-			temp->prim->coloana = coloana;
-			temp->prim->nrComplex = complex(x);
-			temp->prim->next = NULL;
-			temp->next = p->next;
-			p->next = temp;
-			if (!nrColoane[coloana]) {
-				nrColoane[coloana] = 1;
-				nrCol += 1;
-			}
-			nrLinii += 1;
-			dimensiune += 1;
-		}
-	}
+	x= rezultat;
 }
 
-
- //METODE ACCES**************************
-
- long matrice::getDim() { return this->dimensiune; }
- int matrice::getLinii() { return this->nrLinii; }
- int matrice::getColoane() { return this->nrCol; }
-
- complex matrice::getValoareElement(int linia, int coloana) {
-	 complex temp;
-	 if (!primCol) {
-		 return temp;
-	 }
-
-	 nod2 *ciclare = primCol;
-	 while (ciclare && ciclare->linia != linia) {
-		 ciclare = ciclare->next;
-	 }
-
-	 if (!ciclare) {
-		 return temp;
-	 }
-
-	 nod *ciclare2 = ciclare->prim;
-	 while (ciclare2 && ciclare2->coloana != coloana) {
-		 ciclare2 = ciclare2->next;
-	 }
-
-	 if (ciclare2 && ciclare2->coloana == coloana) {
-		 temp = complex(ciclare2->nrComplex);
-		 return temp;
-	 }
-
-	 return temp;
- }
-
-matrice::~matrice()
-{
-	delete[] coloane;
-	delete[] linii;
-//	delete[] valori;
+template <class a_type>
+void patratica_triunghiulara<a_type>::determinant(complex<a_type>&x, int grad) {
+	complex<a_type> rezultat;
+	rezultat = this->getValoareElement(0, 0);
+	for (int i = 1; i < grad; i++) {
+		rezultat = rezultat * this->getValoareElement(i, i);
+	}
+	x = rezultat;
 }
-*/

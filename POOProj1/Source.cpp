@@ -3,9 +3,11 @@
 #include <cstdlib>
 #include "complex.h"
 #include "matrice.h"
+#include "complex.cpp"
+#include "matrice.cpp"
 
 using namespace std;
-ifstream inf("intrare.txt");
+//ifstream inf("matPatratica.txt");
 
 //Nota!!!!!!! La insert in matrice, scad -1 din pozitia dorita, la linie si coloana
 
@@ -59,26 +61,48 @@ int main() {
 
 	*/
 
-	complex a(3, 4);
-	complex b;
-	complex c;
-	c=b = a;
-	cout << "a " << a << endl << "b " << b << endl<<"c "<<c<<endl;
+	complex<int> a(3, 4);
+	cout << a<<endl;
+	complex<double> b(5.44, 4.66);
+	cout << b<<endl;
+	matrice<int>A;
+	matrice<double>B;
+	A.insert(a, 3-1, 5-1);
+	B.insert(b, 7-1, 2-1);
+	cout << A << endl << B<<endl;
 
-	matrice A;
-	matrice B;
-	matrice C;
+	
+	complex<int>deter;
+	A.determinant(deter,A.gradMaxim());
+	cout << deter << endl;
 
-	complex x(1, 2);
-	complex y(2, 3);
+	matrice_patratica<int> D("triunghi.txt");
+	//D.insert(a, 3, 5);
+	cout << D << endl;// << D.determinant(D.gradMaxim()) << endl;
+//	complex<int>deter;
+	matrice<int> *point = &D;
+	D.matrice_patratica<int>::determinant(deter,D.getOrdin());
+	cout << deter << endl;
+	
+	
+	patratica_triunghiulara<float>E("scalara.txt");
+	complex<float>ddd;
+	matrice_patratica<float> *pp = &E;
+	pp->determinant(ddd, pp->getOrdin());
+	cout << E << endl << ddd << endl;
+	if (E.esteScalara())
+		cout << "este scalara" << endl;
+	else
+		cout << "nu este scalara" << endl;
 
-	A.insert(a, 0, 0);
-	A.insert(x, 1, 0);
-	A.insert(y, 1, 1);
+	patratica_triunghiulara<float>F("triunghi.txt");
+	cout << endl << F << endl;
+	if (F.esteTriunghiulara())
+		cout << "este triunghiulara" << endl;
+	else
+		cout << "nu este triunghiulara" << endl;
+	
+	//trimit din derivate numele in ala de baza din care sa faca citirea matricii
 
-	cout << A<<endl;
-	C=B = A;
-	cout << B;
-	cout << endl << C;
 	return 0;
 }
